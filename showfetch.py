@@ -1,7 +1,7 @@
 import requests
 import json
 
-"""Next fetch is only page 256, 257"""
+"""Next fetch is page 257"""
 def fetch_shows(page):
     response = requests.get("https://api.tvmaze.com/shows?page=" + str(page))
     if response.status_code == 404:
@@ -35,7 +35,7 @@ while fetch:
         else:
             network = show["network"]["name"]
 
-        all_shows[show["name"]] = {"network":network, "streaming": streaming, "imdb":imdb, "mentions": 0, "score":0}
+        all_shows[show["name"]] = {"mentions": 0, "score": 0, "streaming": streaming, "network":network }
     page += 1
 
 with open("AllShows.json", "r+") as file:
