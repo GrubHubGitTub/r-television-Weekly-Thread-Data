@@ -1,7 +1,6 @@
 import requests
 import json
 
-"""Next fetch is page 257"""
 def fetch_shows(page):
     response = requests.get("https://api.tvmaze.com/shows?page=" + str(page))
     if response.status_code == 404:
@@ -38,5 +37,5 @@ while fetch:
         all_shows[show["name"]] = {"mentions": 0, "score": 0, "streaming": streaming, "network":network }
     page += 1
 
-with open("AllShows.json", "r+") as file:
-    json.dump(all_shows, file, indent=4)
+with open("AllShows.json", "w") as file:
+    file.write(json.dumps(all_shows))
