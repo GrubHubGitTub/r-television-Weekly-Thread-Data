@@ -1,17 +1,14 @@
-import os
-import dotenv
 import pandas as pd
 import json
 import praw
-dotenv.load_dotenv()
 
 reddit = praw.Reddit(
     client_id= "efvqTOiFmiUSsHiNWOquig",
-    client_secret= ,
+    client_secret= "",
     user_agent= "television fetch by u/Grubster11",
     )
 
-submission = reddit.submission("xlzwh6")
+submission = reddit.submission("xs3kg1")
 submission.comments.replace_more(limit=None)
 comment_number = 0
 
@@ -59,21 +56,21 @@ with open('AllShows.json', 'r') as json_file:
             data["Cyberpunk: Edgerunners"]["mentions"] += 1
             data["Cyberpunk: Edgerunners"]["score"] += score
 
-        if ("house of dragon" in lower or "hotd" in lower) and "House of the Dragon".lower() not in lower:
+        if ("house of dragon" in lower or "hotd" in lower or "hod" in lower) and "House of the Dragon".lower() not in lower:
             data["House of the Dragon"]["mentions"] += 1
             data["House of the Dragon"]["score"] += score
 
         print(comment_number)
 
-with open('Sept.30.22.json', 'w') as json_file:
+with open('Oct.7.22.json', 'w') as json_file:
     json_file.write(json.dumps(data))
 
-with open('Sept.30.22.json', 'r') as json_file:
+with open('Oct.7.22.json', 'r') as json_file:
     data = json.load(json_file)
     df = pd.DataFrame(data)
     df = df.T
     df = df.sort_values(by=['mentions', 'score'], ascending=False)
-    df.to_csv("Sept.30.22.csv")
+    df.to_csv("Oct.7.22.csv")
 
 
 
