@@ -1,14 +1,15 @@
 import pandas as pd
 import json
 import praw
+from datetime import datetime
 
 reddit = praw.Reddit(
     client_id= "efvqTOiFmiUSsHiNWOquig",
-    client_secret= "",
+    client_secret= "7ggpUxYtkLkGFWMfLJZguO3SVku2NQ",
     user_agent= "television fetch by u/Grubster11",
     )
 
-submission = reddit.submission("xs3kg1")
+submission = reddit.submission("xy1dai")
 submission.comments.replace_more(limit=None)
 comment_number = 0
 
@@ -22,10 +23,12 @@ with open('AllShows.json', 'r') as json_file:
         if comment.author == "Grubster11":
             print("SKIP COMMENT")
             continue
+
         lower = comment.body.lower()
         score = comment.score
-
         for key, value in data.items():
+            if len(key) <= 3:
+                continue
             if key.lower() in lower:
                 value["mentions"] += 1
                 value["score"] += score
@@ -62,15 +65,19 @@ with open('AllShows.json', 'r') as json_file:
 
         print(comment_number)
 
-with open('Oct.7.22.json', 'w') as json_file:
+date = datetime.today().strftime('%Y-%m-%d')
+
+with open(f"{date}.json", 'w') as json_file:
     json_file.write(json.dumps(data))
 
-with open('Oct.7.22.json', 'r') as json_file:
+with open(f"{date}.json", 'r') as json_file:
     data = json.load(json_file)
     df = pd.DataFrame(data)
     df = df.T
     df = df.sort_values(by=['mentions', 'score'], ascending=False)
-    df.to_csv("Oct.7.22.csv")
+    df.to_csv(f"{date}-mentions.csv")
+    df = df.sort_values(by=['score', 'mentions'], ascending=False)
+    df.to_csv(f"{date}-score.csv")
 
 
 
