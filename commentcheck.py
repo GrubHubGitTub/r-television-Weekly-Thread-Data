@@ -5,7 +5,7 @@ from datetime import datetime
 
 reddit = praw.Reddit(
     client_id= "efvqTOiFmiUSsHiNWOquig",
-    client_secret= "7ggpUxYtkLkGFWMfLJZguO3SVku2NQ",
+    client_secret= "",
     user_agent= "television fetch by u/Grubster11",
     )
 
