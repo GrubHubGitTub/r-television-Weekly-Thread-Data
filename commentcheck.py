@@ -9,7 +9,7 @@ reddit = praw.Reddit(
     user_agent= "television fetch by u/Grubster11",
     )
 
-submission = reddit.submission("xy1dai")
+submission = reddit.submission("y3w9iu")
 submission.comments.replace_more(limit=None)
 comment_number = 0
 
@@ -19,7 +19,7 @@ with open('AllShows.json', 'r') as json_file:
     for comment in submission.comments.list():
         comment_number += 1
 
-        # skip last weeks rankings
+        # skip my own comments
         if comment.author == "Grubster11":
             print("SKIP COMMENT")
             continue
@@ -59,7 +59,7 @@ with open('AllShows.json', 'r') as json_file:
             data["Cyberpunk: Edgerunners"]["mentions"] += 1
             data["Cyberpunk: Edgerunners"]["score"] += score
 
-        if ("house of dragon" in lower or "hotd" in lower or "hod" in lower) and "House of the Dragon".lower() not in lower:
+        if ("house of dragon" in lower or "hotd" in lower or "hod" in lower or "house of dragons" in lower) and "House of the Dragon".lower() not in lower:
             data["House of the Dragon"]["mentions"] += 1
             data["House of the Dragon"]["score"] += score
 
@@ -67,17 +67,12 @@ with open('AllShows.json', 'r') as json_file:
 
 date = datetime.today().strftime('%Y-%m-%d')
 
-with open(f"{date}.json", 'w') as json_file:
-    json_file.write(json.dumps(data))
-
-with open(f"{date}.json", 'r') as json_file:
-    data = json.load(json_file)
-    df = pd.DataFrame(data)
-    df = df.T
-    df = df.sort_values(by=['mentions', 'score'], ascending=False)
-    df.to_csv(f"{date}-mentions.csv")
-    df = df.sort_values(by=['score', 'mentions'], ascending=False)
-    df.to_csv(f"{date}-score.csv")
+df = pd.DataFrame(data)
+df = df.T
+df = df.sort_values(by=['mentions', 'score'], ascending=False)
+df.to_csv(f"{date}-mentions.csv")
+df = df.sort_values(by=['score', 'mentions'], ascending=False)
+df.to_csv(f"{date}-score.csv")
 
 
 
