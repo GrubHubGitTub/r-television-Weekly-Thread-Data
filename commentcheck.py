@@ -9,7 +9,7 @@ reddit = praw.Reddit(
     user_agent= "television fetch by u/Grubster11",
     )
 
-submission = reddit.submission("y3w9iu")
+submission = reddit.submission("y9vxro")
 submission.comments.replace_more(limit=None)
 comment_number = 0
 
@@ -46,7 +46,7 @@ with open('AllShows.json', 'r') as json_file:
             data["She-Hulk: Attorney at Law"]["mentions"] += 1
             data["She-Hulk: Attorney at Law"]["score"] += score
 
-        if ("lord of the rings" in lower or "rings of power" in lower or "rop" in lower or "lotr" in lower) \
+        if ("lord of the rings" in lower or "rings of power" in lower or "lotr" in lower) \
                 and "The Lord of the Rings: The Rings of Power".lower() not in lower:
             data["The Lord of the Rings: The Rings of Power"]["mentions"] += 1
             data["The Lord of the Rings: The Rings of Power"]["score"] += score
@@ -62,6 +62,14 @@ with open('AllShows.json', 'r') as json_file:
         if ("house of dragon" in lower or "hotd" in lower or "hod" in lower or "house of dragons" in lower) and "House of the Dragon".lower() not in lower:
             data["House of the Dragon"]["mentions"] += 1
             data["House of the Dragon"]["score"] += score
+
+        if ("mr robot" in lower) and "Mr. Robot".lower() not in lower:
+            data["Mr. Robot"]["mentions"] += 1
+            data["Mr. Robot"]["score"] += score
+
+        if ("cabinet of curiosities" in lower) and "Guillermo del Toro's Cabinet of Curiosities".lower() not in lower:
+            data["Guillermo del Toro's Cabinet of Curiosities"]["mentions"] += 1
+            data["Guillermo del Toro's Cabinet of Curiosities"]["score"] += score
 
         print(comment_number)
 
