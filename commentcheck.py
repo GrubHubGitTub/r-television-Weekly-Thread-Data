@@ -9,7 +9,7 @@ reddit = praw.Reddit(
     user_agent= "television fetch by u/Grubster11",
     )
 
-submission = reddit.submission("y9vxro")
+submission = reddit.submission("yfqh0q")
 submission.comments.replace_more(limit=None)
 comment_number = 0
 
@@ -70,6 +70,9 @@ with open('AllShows.json', 'r') as json_file:
         if ("cabinet of curiosities" in lower) and "Guillermo del Toro's Cabinet of Curiosities".lower() not in lower:
             data["Guillermo del Toro's Cabinet of Curiosities"]["mentions"] += 1
             data["Guillermo del Toro's Cabinet of Curiosities"]["score"] += score
+        if ("the devils hour" in lower) and "The Devil's Hour".lower() not in lower:
+            data["The Devil's Hour"]["mentions"] += 1
+            data["The Devil's Hour"]["score"] += score
 
         print(comment_number)
 
