@@ -9,7 +9,7 @@ reddit = praw.Reddit(
     user_agent= "television fetch by u/Grubster11",
     )
 
-submission = reddit.submission("yfqh0q")
+submission = reddit.submission("ym19f5")
 submission.comments.replace_more(limit=None)
 comment_number = 0
 
