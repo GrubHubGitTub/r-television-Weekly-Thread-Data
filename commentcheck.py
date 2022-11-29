@@ -15,9 +15,15 @@ comment_number = 0
 
 with open('AllShows.json', 'r') as json_file:
     data = json.load(json_file)
+    skip_shows = ["Ally", "Really", "Star", "King", "From", "Time", "Arte", "The First", "The Show", "Bette", "Last",
+                  "Next", "neXt", "Don't", "Them", "Hile", "Vera", "Drama", "The Story", "Stat", "Before",
+                  "Another", "Roba", "Back", "Hard", "Haven", "Made", "High", "Look", "Episodes", "Hank", "Times",
+                  "Land", "Ellen", "Action", "Rise", "Found", "Between", "Mila", "Help", "Sever", "Thanks", "The End",
+                  "Looking", "Live"]
 
     for comment in submission.comments.list():
         comment_number += 1
+        print(comment_number)
 
         # skip my own comments
         if comment.author == "Grubster11":
@@ -28,6 +34,8 @@ with open('AllShows.json', 'r') as json_file:
         score = comment.score
         for key, value in data.items():
             if len(key) <= 3:
+                continue
+            if key in skip_shows:
                 continue
             if key.lower() in lower:
                 value["mentions"] += 1
@@ -70,11 +78,14 @@ with open('AllShows.json', 'r') as json_file:
         if ("cabinet of curiosities" in lower) and "Guillermo del Toro's Cabinet of Curiosities".lower() not in lower:
             data["Guillermo del Toro's Cabinet of Curiosities"]["mentions"] += 1
             data["Guillermo del Toro's Cabinet of Curiosities"]["score"] += score
+
         if ("the devils hour" in lower) and "The Devil's Hour".lower() not in lower:
             data["The Devil's Hour"]["mentions"] += 1
             data["The Devil's Hour"]["score"] += score
 
-        print(comment_number)
+        if "white lotus" in lower and "The White Lotus".lower() not in lower:
+            data["The White Lotus"]["mentions"] += 1
+            data["The White Lotus"]["score"] += score
 
 date = datetime.today().strftime('%Y-%m-%d')
 
