@@ -13,7 +13,7 @@ reddit = praw.Reddit(
     user_agent="television fetch by u/Grubster11",
 )
 
-submission = reddit.submission("z4gtrt")
+submission = reddit.submission("zaptrd")
 submission.comments.replace_more(limit=None)
 
 with open(f"{date}-allShows.json", 'r') as json_file:
@@ -68,7 +68,7 @@ for comment in submission.comments.list():
         weekly_data["Cyberpunk: Edgerunners"]["mentions"] += 1
         weekly_data["Cyberpunk: Edgerunners"]["score"] += score
 
-    if ("house of dragon" in lower or "hotd" in lower or "hod" in lower or "house of dragons" in lower) \
+    if ("house of dragon" in lower or "hotd" in lower or "house of dragons" in lower) \
             and "House of the Dragon".lower() not in lower:
         weekly_data["House of the Dragon"]["mentions"] += 1
         weekly_data["House of the Dragon"]["score"] += score
@@ -93,6 +93,14 @@ for comment in submission.comments.list():
         weekly_data["The White Lotus"]["mentions"] += 1
         weekly_data["The White Lotus"]["score"] += score
 
+    if "slow horse" in lower and "Slow Horses".lower() not in lower:
+        weekly_data["Slow Horses"]["mentions"] += 1
+        weekly_data["Slow Horses"]["score"] += score
+
+    if "rogue heroes" in lower and "SAS: Rogue Heroes".lower() not in lower:
+        weekly_data["SAS: Rogue Heroes"]["mentions"] += 1
+        weekly_data["SAS: Rogue Heroes"]["score"] += score
+
 # below is only used for the first generation to add default values for comparison on next file
 # for key, value in weekly_data.items():
 #     if value["mentions"] >= 10:
@@ -105,9 +113,14 @@ try:
         last_week = json.load(json_file)
 
 except FileNotFoundError:
-    last_week_date = (d - timedelta(days=8)).strftime('%d-%m-%Y')
-    with open(f"{last_week_date}-allShows.json", 'r') as json_file:
-        last_week = json.load(json_file)
+    try:
+        last_week_date = (d - timedelta(days=6)).strftime('%d-%m-%Y')
+        with open(f"{last_week_date}-allShows.json", 'r') as json_file:
+            last_week = json.load(json_file)
+    except FileNotFoundError:
+        last_week_date = (d - timedelta(days=8)).strftime('%d-%m-%Y')
+        with open(f"{last_week_date}-allShows.json", 'r') as json_file:
+            last_week = json.load(json_file)
 
 for key, value in weekly_data.items():
 
