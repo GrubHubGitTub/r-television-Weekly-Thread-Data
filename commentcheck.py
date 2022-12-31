@@ -13,7 +13,7 @@ reddit = praw.Reddit(
     user_agent="television fetch by u/Grubster11",
 )
 
-submission = reddit.submission("zni0lc")
+submission = reddit.submission("ztkf4x")
 submission.comments.replace_more(limit=None)
 
 with open(f"{date}-allShows.json", 'r') as json_file:
@@ -104,6 +104,10 @@ for comment in submission.comments.list():
     if "harry and meghan" in lower and "Harry & Meghan".lower() not in lower:
         weekly_data["Harry & Meghan"]["mentions"] += 1
         weekly_data["Harry & Meghan"]["score"] += score
+
+    if "blood origin" in lower and "The Witcher: Blood Origin".lower() not in lower:
+        weekly_data["The Witcher: Blood Origin"]["mentions"] += 1
+        weekly_data["The Witcher: Blood Origin"]["score"] += score
 
 # below is only used for the first generation to add default values for comparison on next file
 # for key, value in weekly_data.items():
