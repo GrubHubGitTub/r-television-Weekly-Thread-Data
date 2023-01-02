@@ -44,7 +44,8 @@ while fetch:
                 network = show["network"]["name"]
 
             all_shows[show["name"]] = {"streaming": streaming, "network": network, "mentions": 0, "score": 0,
-                                       "consecutive": 0, "gain": 0, "total top": 0, "last date": ""}
+                                       "consecutive": 0, "gain": 0, "total mentions": 0, "total top": 0, "last date": "",
+                                       "total score": 0, "week added": 1}
     page += 1
 
 date = datetime.today().strftime('%d-%m-%Y')

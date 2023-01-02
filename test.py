@@ -1,4 +1,7 @@
-def isEnglish(s):
-  return s.isascii()
+from datetime import datetime, timedelta
 
-print(isEnglish("Tanamera Lion of Singapore"))
+d = datetime.today()
+date = str(d.date())
+tu = d.fromisoformat(date)
+w = datetime.date(tu).isocalendar()[1]
+print(w)

@@ -7,6 +7,10 @@ d = datetime.today()
 date = d.strftime('%d-%m-%Y')
 last_week_date = (d - timedelta(days=7)).strftime('%d-%m-%Y')
 
+formatted = str(d.date())
+tup = d.fromisoformat(formatted)
+week_number = datetime.date(tup).isocalendar()[1]
+
 reddit = praw.Reddit(
     client_id="efvqTOiFmiUSsHiNWOquig",
     client_secret="",
@@ -109,55 +113,72 @@ for comment in submission.comments.list():
         weekly_data["The Witcher: Blood Origin"]["mentions"] += 1
         weekly_data["The Witcher: Blood Origin"]["score"] += score
 
-# below is only used for the first generation to add default values for comparison on next file
-# for key, value in weekly_data.items():
-#     if value["mentions"] >= 10:
-#         weekly_data[key]["consecutive"] = 1
-#         weekly_data[key]["total top"] = 1
+    if "fleishman" in lower and "Fleishman is in Trouble".lower() not in lower:
+        weekly_data["Fleishman is in Trouble"]["mentions"] += 1
+        weekly_data["Fleishman is in Trouble"]["score"] += score
 
-# check and compare with last week:
-try:
-    with open(f"{last_week_date}-allShows.json", 'r') as json_file:
-        last_week = json.load(json_file)
-
-except FileNotFoundError:
-    try:
-        last_week_date = (d - timedelta(days=6)).strftime('%d-%m-%Y')
-        with open(f"{last_week_date}-allShows.json", 'r') as json_file:
-            last_week = json.load(json_file)
-    except FileNotFoundError:
-        last_week_date = (d - timedelta(days=8)).strftime('%d-%m-%Y')
-        with open(f"{last_week_date}-allShows.json", 'r') as json_file:
-            last_week = json.load(json_file)
-
+# below is only used for the first week to add default values for comparison on next file
 for key, value in weekly_data.items():
+    weekly_data[key]["total mentions"] = weekly_data[key]["mentions"]
+    weekly_data[key]["total score"] = weekly_data[key]["score"]
 
-    match = False
-    for key2, value2 in last_week.items():
-        if key == key2:
-            match = True
-            if value["mentions"] >= 10:
-                # check last weeks weekly_data and add to consecutive number
-                if value2["consecutive"] >= 1:
-                    weekly_data[key]["consecutive"] = value2["consecutive"] + 1
-                else:
-                    weekly_data[key]["consecutive"] = 1
-                    weekly_data[key]["last date"] = value2["last date"]
-
-                weekly_data[key]["total top"] += (value2["total top"] + 1)
-                weekly_data[key]["gain"] = weekly_data[key]["mentions"] - value2["mentions"]
-
-            else:
-                # save last date for next re appearance
-                weekly_data[key]["consecutive"] = 0
-                if value2["consecutive"] >= 1:
-                    weekly_data[key]["last date"] = last_week_date
-
-    if not match and weekly_data[key]["mentions"] >= 10:
-        # add weekly data for new top show
+    if value["mentions"] >= 10:
         weekly_data[key]["consecutive"] = 1
-        weekly_data[key]["total top"] += 1
         weekly_data[key]["gain"] = weekly_data[key]["mentions"]
+        weekly_data[key]["total top"] = 1
+
+# # check and compare with last week:
+# try:
+#     with open(f"{last_week_date}-allShows.json", 'r') as json_file:
+#         last_week = json.load(json_file)
+#
+# except FileNotFoundError:
+#     try:
+#         last_week_date = (d - timedelta(days=6)).strftime('%d-%m-%Y')
+#         with open(f"{last_week_date}-allShows.json", 'r') as json_file:
+#             last_week = json.load(json_file)
+#     except FileNotFoundError:
+#         last_week_date = (d - timedelta(days=8)).strftime('%d-%m-%Y')
+#         with open(f"{last_week_date}-allShows.json", 'r') as json_file:
+#             last_week = json.load(json_file)
+#
+# for key, value in weekly_data.items():
+#
+#     match = False
+#     for key2, value2 in last_week.items():
+#         if key == key2:
+#             match = True
+#             weekly_data[key]["week added"] = value2["week added"]
+#             weekly_data[key]["total mentions"] = (value2["total mentions"] + weekly_data[key]["mentions"])
+#             weekly_data[key]["total score"] = (value2["total score"] + weekly_data[key]["score"])
+
+#             if value["mentions"] >= 10:
+#                 # check last weeks weekly_data and add to consecutive number
+#                 if value2["consecutive"] >= 1:
+#                     weekly_data[key]["consecutive"] = value2["consecutive"] + 1
+#                 else:
+#                     weekly_data[key]["consecutive"] = 1
+#                     weekly_data[key]["last date"] = value2["last date"]
+#                 weekly_data[key]["gain"] = weekly_data[key]["mentions"] - value2["mentions"]
+#                 weekly_data[key]["total top"] += (value2["total top"] + 1)
+#
+#             else:
+#                 # save last date for next re appearance
+#                 weekly_data[key]["consecutive"] = 0
+#                 if value2["consecutive"] >= 1:
+#                     weekly_data[key]["last date"] = last_week_date
+#
+#     if not match:
+#         # add data for new show
+#         weekly_data[key]["total mentions"] = weekly_data[key]["mentions"]
+#         weekly_data[key]["total score"] = weekly_data[key]["score"]
+#         weekly_data[key]["week added"] = week_number
+#
+#         if weekly_data[key]["mentions"] >= 10:
+#             weekly_data[key]["consecutive"] = 1
+#             weekly_data[key]["gain"] = weekly_data[key]["mentions"]
+#             weekly_data[key]["total top"] += 1
+
 
 with open(f"{date}-allShows.json", "w") as file:
     file.write(json.dumps(weekly_data))
