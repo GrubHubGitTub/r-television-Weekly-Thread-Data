@@ -17,7 +17,7 @@ reddit = praw.Reddit(
     user_agent="television fetch by u/Grubster11",
 )
 
-submission = reddit.submission("ztkf4x")
+submission = reddit.submission("zz3zjf")
 submission.comments.replace_more(limit=None)
 
 with open(f"{date}-allShows.json", 'r') as json_file:
@@ -116,6 +116,27 @@ for comment in submission.comments.list():
     if "fleishman" in lower and "Fleishman is in Trouble".lower() not in lower:
         weekly_data["Fleishman is in Trouble"]["mentions"] += 1
         weekly_data["Fleishman is in Trouble"]["score"] += score
+
+    if "mandalorian" in lower and "The Mandalorian".lower() not in lower:
+        weekly_data["The Mandalorian"]["mentions"] += 1
+        weekly_data["The Mandalorian"]["score"] += score
+
+    if ("love death and robots" in lower or "love, death and robots" in lower or "love, death, and robots" in lower) and \
+            "Love, Death & Robots".lower() not in lower:
+        weekly_data["Love, Death & Robots"]["mentions"] += 1
+        weekly_data["Love, Death & Robots"]["score"] += score
+
+    if "picard" in lower and "Star Trek: Picard".lower() not in lower:
+        weekly_data["Star Trek: Picard"]["mentions"] += 1
+        weekly_data["Star Trek: Picard"]["score"] += score
+
+    if "pam and tommy" in lower and "Pam & Tommy".lower() not in lower:
+        weekly_data["Pam & Tommy"]["mentions"] += 1
+        weekly_data["Pam & Tommy"]["score"] += score
+
+    if "winning time" in lower and "Winning Time: The Rise of the Lakers Dynasty".lower() not in lower:
+        weekly_data["Winning Time: The Rise of the Lakers Dynasty"]["mentions"] += 1
+        weekly_data["Winning Time: The Rise of the Lakers Dynasty"]["score"] += score
 
 # below is only used for the first week to add default values for comparison on next file
 for key, value in weekly_data.items():
