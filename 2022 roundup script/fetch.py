@@ -35,14 +35,14 @@ for thread in threads[week-1:]:
             continue
 
         # comment check- make all words lowercase
-        lower = comment.body.lower()
+        lower = comment.body.comment_lower()
         score = comment.score
         for key, value in weekly_data.items():
-            # if len(key) <= 3:
+            # if len(show) <= 3:
             #     continue
-            # if key in skip_shows:
+            # if show in skip_shows:
             #     continue
-            if key.lower() in lower:
+            if key.comment_lower() in lower:
                 value["mentions"] += 1
                 value["score"] += score
 

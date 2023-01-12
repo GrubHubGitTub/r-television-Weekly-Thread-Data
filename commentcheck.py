@@ -10,6 +10,7 @@ last_week_date = (d - timedelta(days=7)).strftime('%d-%m-%Y')
 formatted = str(d.date())
 tup = d.fromisoformat(formatted)
 week_number = datetime.date(tup).isocalendar()[1]
+print(f"it's week {week_number}")
 
 reddit = praw.Reddit(
     client_id="efvqTOiFmiUSsHiNWOquig",
@@ -23,6 +24,9 @@ submission.comments.replace_more(limit=None)
 with open(f"{date}-allShows.json", 'r') as json_file:
     weekly_data = json.load(json_file)
 
+# with open("2022-allShows.json", 'r') as json_file:
+#     weekly_data = json.load(json_file)
+
 comment_number = 0
 for comment in submission.comments.list():
     comment_number += 1
@@ -34,119 +38,125 @@ for comment in submission.comments.list():
         continue
 
     # comment check- make all words lowercase
-    lower = comment.body.lower()
+    comment_lower = comment.body.lower()
     score = comment.score
-    for key, value in weekly_data.items():
-        # if len(key) <= 3:
-        #     continue
-        # if key in skip_shows:
-        #     continue
-        if key.lower() in lower:
-            value["mentions"] += 1
-            value["score"] += score
-            print(key)
+
+    for show, details in weekly_data.items():
+
+        # remove The for shows that start with it, can lead to some overcounts
+        if len(show) > 10 and show[0:4] == "The ":
+            show = show[4:]
+
+        if show.lower() in comment_lower:
+            details["mentions"] += 1
+            details["score"] += score
+
+        # some regex - it works, but undercounts due to lists, line ends
+        # ends = [" ","’", ",", ".", "!", "?",'"',"'","/",":", "&", ")", "(", "[","]","-","*"]
+        # match = False
+        # for end in ends:
+        #     if f"{show.lower()}{end}" in comment_lower:
+        #         details["mentions"] += 1
+        #         details["score"] += score
+        #         match = True
+        #         break
+        #
+        # # for the case of a comment just being the name of a show, no ends.
+        # if not match:
+        #     if show.lower() in comment_lower and len(show) == len(comment_lower):
+        #         details["mentions"] += 1
+        #         details["score"] += score
 
     # manual checks for common ways to say names on reddit
-    if "andor" in lower and "star wars: andor" not in lower:
+    if "andor" in comment_lower and "star wars: andor" not in comment_lower:
         weekly_data["Star Wars: Andor"]["mentions"] += 1
         weekly_data["Star Wars: Andor"]["score"] += score
 
-    if "dahmer" in lower and "Monster: The Jeffrey Dahmer Story".lower() not in lower:
+    if "dahmer" in comment_lower and "Monster: The Jeffrey Dahmer Story".lower() not in comment_lower:
         weekly_data["Monster: The Jeffrey Dahmer Story"]["mentions"] += 1
         weekly_data["Monster: The Jeffrey Dahmer Story"]["score"] += score
 
-    if ("she hulk" in lower or "she-hulk" in lower) and "She-Hulk: Attorney at Law".lower() not in lower:
+    if ("she hulk" in comment_lower or "she-hulk" in comment_lower) and "She-Hulk: Attorney at Law".lower() not in comment_lower:
         weekly_data["She-Hulk: Attorney at Law"]["mentions"] += 1
         weekly_data["She-Hulk: Attorney at Law"]["score"] += score
 
-    if ("lord of the rings" in lower or "rings of power" in lower or "lotr" in lower) \
-            and "The Lord of the Rings: The Rings of Power".lower() not in lower:
+    if ("lord of the rings" in comment_lower or "rings of power" in comment_lower or "lotr" in comment_lower) \
+            and "The Lord of the Rings: The Rings of Power".lower() not in comment_lower:
         weekly_data["The Lord of the Rings: The Rings of Power"]["mentions"] += 1
         weekly_data["The Lord of the Rings: The Rings of Power"]["score"] += score
 
-    if "sandman" in lower and "The Sandman".lower() not in lower:
-        weekly_data["The Sandman"]["mentions"] += 1
-        weekly_data["The Sandman"]["score"] += score
-
-    if "cyberpunk" in lower and "Cyberpunk: Edgerunners".lower() not in lower:
+    if "cyberpunk" in comment_lower and "Cyberpunk: Edgerunners".lower() not in comment_lower:
         weekly_data["Cyberpunk: Edgerunners"]["mentions"] += 1
         weekly_data["Cyberpunk: Edgerunners"]["score"] += score
 
-    if ("house of dragon" in lower or "hotd" in lower or "house of dragons" in lower) \
-            and "House of the Dragon".lower() not in lower:
+    if ("house of dragon" in comment_lower or "hotd" in comment_lower or "house of dragons" in comment_lower) \
+            and "House of the Dragon".lower() not in comment_lower:
         weekly_data["House of the Dragon"]["mentions"] += 1
         weekly_data["House of the Dragon"]["score"] += score
 
-    if ("mr robot" in lower) and "Mr. Robot".lower() not in lower:
+    if "mr robot" in comment_lower and "Mr. Robot".lower() not in comment_lower:
         weekly_data["Mr. Robot"]["mentions"] += 1
         weekly_data["Mr. Robot"]["score"] += score
 
-    if ("mr. inbetween" in lower) and "Mr Inbetween".lower() not in lower:
+    if "mr. inbetween" in comment_lower and "Mr Inbetween".lower() not in comment_lower:
         weekly_data["Mr Inbetween"]["mentions"] += 1
         weekly_data["Mr Inbetween"]["score"] += score
 
-    if ("cabinet of curiosities" in lower) and "Guillermo del Toro's Cabinet of Curiosities".lower() not in lower:
+    if "cabinet of curiosities" in comment_lower and "Guillermo del Toro's Cabinet of Curiosities".lower() not in comment_lower:
         weekly_data["Guillermo del Toro's Cabinet of Curiosities"]["mentions"] += 1
         weekly_data["Guillermo del Toro's Cabinet of Curiosities"]["score"] += score
 
-    if ("the devils hour" in lower) and "The Devil's Hour".lower() not in lower:
+    if "the devils hour" in comment_lower and "The Devil's Hour".lower() not in comment_lower:
         weekly_data["The Devil's Hour"]["mentions"] += 1
         weekly_data["The Devil's Hour"]["score"] += score
 
-    if "white lotus" in lower and "The White Lotus".lower() not in lower:
-        weekly_data["The White Lotus"]["mentions"] += 1
-        weekly_data["The White Lotus"]["score"] += score
 
-    if "slow horse" in lower and "Slow Horses".lower() not in lower:
+    if "slow horse" in comment_lower and "Slow Horses".lower() not in comment_lower:
         weekly_data["Slow Horses"]["mentions"] += 1
         weekly_data["Slow Horses"]["score"] += score
 
-    if "rogue heroes" in lower and "SAS: Rogue Heroes".lower() not in lower:
+    if "rogue heroes" in comment_lower and "SAS: Rogue Heroes".lower() not in comment_lower:
         weekly_data["SAS: Rogue Heroes"]["mentions"] += 1
         weekly_data["SAS: Rogue Heroes"]["score"] += score
 
-    if "harry and meghan" in lower and "Harry & Meghan".lower() not in lower:
+    if "harry and meghan" in comment_lower and "Harry & Meghan".lower() not in comment_lower:
         weekly_data["Harry & Meghan"]["mentions"] += 1
         weekly_data["Harry & Meghan"]["score"] += score
 
-    if "blood origin" in lower and "The Witcher: Blood Origin".lower() not in lower:
+    if "blood origin" in comment_lower and "The Witcher: Blood Origin".lower() not in comment_lower:
         weekly_data["The Witcher: Blood Origin"]["mentions"] += 1
         weekly_data["The Witcher: Blood Origin"]["score"] += score
 
-    if "fleishman" in lower and "Fleishman is in Trouble".lower() not in lower:
+    if "fleishman" in comment_lower and "Fleishman is in Trouble".lower() not in comment_lower:
         weekly_data["Fleishman is in Trouble"]["mentions"] += 1
         weekly_data["Fleishman is in Trouble"]["score"] += score
 
-    if "mandalorian" in lower and "The Mandalorian".lower() not in lower:
-        weekly_data["The Mandalorian"]["mentions"] += 1
-        weekly_data["The Mandalorian"]["score"] += score
-
-    if ("love death and robots" in lower or "love, death and robots" in lower or "love, death, and robots" in lower) and \
-            "Love, Death & Robots".lower() not in lower:
+    if ("love death and robots" in comment_lower or "love, death and robots" in comment_lower or "love, death, and robots" in comment_lower) and \
+            "Love, Death & Robots".lower() not in comment_lower:
         weekly_data["Love, Death & Robots"]["mentions"] += 1
         weekly_data["Love, Death & Robots"]["score"] += score
 
-    if "picard" in lower and "Star Trek: Picard".lower() not in lower:
+    if "picard" in comment_lower and "Star Trek: Picard".lower() not in comment_lower:
         weekly_data["Star Trek: Picard"]["mentions"] += 1
         weekly_data["Star Trek: Picard"]["score"] += score
 
-    if "pam and tommy" in lower and "Pam & Tommy".lower() not in lower:
+    if "pam and tommy" in comment_lower and "Pam & Tommy".lower() not in comment_lower:
         weekly_data["Pam & Tommy"]["mentions"] += 1
         weekly_data["Pam & Tommy"]["score"] += score
 
-    if "winning time" in lower and "Winning Time: The Rise of the Lakers Dynasty".lower() not in lower:
+    if "winning time" in comment_lower and "Winning Time: The Rise of the Lakers Dynasty".lower() not in comment_lower:
         weekly_data["Winning Time: The Rise of the Lakers Dynasty"]["mentions"] += 1
         weekly_data["Winning Time: The Rise of the Lakers Dynasty"]["score"] += score
 
 # below is only used for the first week to add default values for comparison on next file
-# for key, value in weekly_data.items():
-#     weekly_data[key]["total mentions"] = weekly_data[key]["mentions"]
-#     weekly_data[key]["total score"] = weekly_data[key]["score"]
+# for show, details in weekly_data.items():
+#     weekly_data[show]["total mentions"] = weekly_data[show]["mentions"]
+#     weekly_data[show]["total score"] = weekly_data[show]["score"]
 #
-#     if value["mentions"] >= 10:
-#         weekly_data[key]["consecutive"] = 1
-#         weekly_data[key]["gain"] = weekly_data[key]["mentions"]
-#         weekly_data[key]["total top"] = 1
+#     if details["mentions"] >= 10:
+#         weekly_data[show]["consecutive"] = 1
+#         weekly_data[show]["gain"] = weekly_data[show]["mentions"]
+#         weekly_data[show]["total top"] = 1
 
 # check and compare with last week:
 try:
@@ -163,42 +173,42 @@ except FileNotFoundError:
         with open(f"{last_week_date}-allShows.json", 'r') as json_file:
             last_week = json.load(json_file)
 
-for key, value in weekly_data.items():
+for show, details in weekly_data.items():
 
     match = False
     for key2, value2 in last_week.items():
-        if key == key2:
+        if show == key2:
             match = True
-            weekly_data[key]["week added"] = value2["week added"]
-            weekly_data[key]["total mentions"] = (value2["total mentions"] + weekly_data[key]["mentions"])
-            weekly_data[key]["total score"] = (value2["total score"] + weekly_data[key]["score"])
+            weekly_data[show]["week added"] = value2["week added"]
+            weekly_data[show]["total mentions"] = (value2["total mentions"] + weekly_data[show]["mentions"])
+            weekly_data[show]["total score"] = (value2["total score"] + weekly_data[show]["score"])
 
-            if value["mentions"] >= 10:
+            if details["mentions"] >= 10:
                 # check last weeks weekly_data and add to consecutive number
                 if value2["consecutive"] >= 1:
-                    weekly_data[key]["consecutive"] = value2["consecutive"] + 1
+                    weekly_data[show]["consecutive"] = value2["consecutive"] + 1
                 else:
-                    weekly_data[key]["consecutive"] = 1
-                    weekly_data[key]["last date"] = value2["last date"]
-                weekly_data[key]["gain"] = weekly_data[key]["mentions"] - value2["mentions"]
-                weekly_data[key]["total top"] += (value2["total top"] + 1)
+                    weekly_data[show]["consecutive"] = 1
+                    weekly_data[show]["last date"] = value2["last date"]
+                weekly_data[show]["gain"] = weekly_data[show]["mentions"] - value2["mentions"]
+                weekly_data[show]["total top"] += (value2["total top"] + 1)
 
             else:
                 # save last date for next re appearance
-                weekly_data[key]["consecutive"] = 0
+                weekly_data[show]["consecutive"] = 0
                 if value2["consecutive"] >= 1:
-                    weekly_data[key]["last date"] = last_week_date
+                    weekly_data[show]["last date"] = last_week_date
 
     if not match:
         # add data for new show
-        weekly_data[key]["total mentions"] = weekly_data[key]["mentions"]
-        weekly_data[key]["total score"] = weekly_data[key]["score"]
-        weekly_data[key]["week added"] = week_number
+        weekly_data[show]["total mentions"] = weekly_data[show]["mentions"]
+        weekly_data[show]["total score"] = weekly_data[show]["score"]
+        weekly_data[show]["week added"] = week_number
 
-        if weekly_data[key]["mentions"] >= 10:
-            weekly_data[key]["consecutive"] = 1
-            weekly_data[key]["gain"] = weekly_data[key]["mentions"]
-            weekly_data[key]["total top"] += 1
+        if weekly_data[show]["mentions"] >= 10:
+            weekly_data[show]["consecutive"] = 1
+            weekly_data[show]["gain"] = weekly_data[show]["mentions"]
+            weekly_data[show]["total top"] += 1
 
 
 with open(f"{date}-allShows.json", "w") as file:
