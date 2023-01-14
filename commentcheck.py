@@ -18,7 +18,7 @@ reddit = praw.Reddit(
     user_agent="television fetch by u/Grubster11",
 )
 
-submission = reddit.submission("zz3zjf")
+submission = reddit.submission("104xqjt")
 submission.comments.replace_more(limit=None)
 
 with open(f"{date}-allShows.json", 'r') as json_file:
@@ -109,7 +109,6 @@ for comment in submission.comments.list():
     if "the devils hour" in comment_lower and "The Devil's Hour".lower() not in comment_lower:
         weekly_data["The Devil's Hour"]["mentions"] += 1
         weekly_data["The Devil's Hour"]["score"] += score
-
 
     if "slow horse" in comment_lower and "Slow Horses".lower() not in comment_lower:
         weekly_data["Slow Horses"]["mentions"] += 1
