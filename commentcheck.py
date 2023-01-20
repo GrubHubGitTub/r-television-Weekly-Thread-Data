@@ -12,13 +12,14 @@ tup = d.fromisoformat(formatted)
 week_number = datetime.date(tup).isocalendar()[1]
 print(f"it's week {week_number}")
 
+
 reddit = praw.Reddit(
     client_id="efvqTOiFmiUSsHiNWOquig",
     client_secret="",
     user_agent="television fetch by u/Grubster11",
 )
 
-submission = reddit.submission("104xqjt")
+submission = reddit.submission("10ay0og")
 submission.comments.replace_more(limit=None)
 
 with open(f"{date}-allShows.json", 'r') as json_file:
@@ -52,22 +53,38 @@ for comment in submission.comments.list():
             details["score"] += score
 
         # some regex - it works, but undercounts due to lists, line ends
-        # ends = [" ","’", ",", ".", "!", "?",'"',"'","/",":", "&", ")", "(", "[","]","-","*"]
-        # match = False
-        # for end in ends:
-        #     if f"{show.lower()}{end}" in comment_lower:
-        #         details["mentions"] += 1
-        #         details["score"] += score
-        #         match = True
-        #         break
-        #
-        # # for the case of a comment just being the name of a show, no ends.
-        # if not match:
-        #     if show.lower() in comment_lower and len(show) == len(comment_lower):
-        #         details["mentions"] += 1
-        #         details["score"] += score
+        ends = [" ","’", ",", ".", "!", "?",'"',"'","/",":", "&", ")", "(", "[","]","-","*"]
+        match = False
+        for end in ends:
+            if f"{show.lower()}{end}" in comment_lower:
+                details["regex-mentions"] += 1
+                details["regex-score"] += score
+                match = True
+                break
+
+        # for the case of a comment just being the name of a show, no ends.
+        if not match:
+            if show.lower() in comment_lower and len(show) == len(comment_lower):
+                details["regex-mentions"] += 1
+                details["regex-score"] += score
 
     # manual checks for common ways to say names on reddit
+    if "ginny and georgia" in comment_lower and "Ginny & Georgia".lower() not in comment_lower:
+        weekly_data["Ginny & Georgia"]["mentions"] += 1
+        weekly_data["Ginny & Georgia"]["score"] += score
+
+    if "bcs" in comment_lower and "Better Call Saul".lower() not in comment_lower:
+        weekly_data["Better Call Saul"]["mentions"] += 1
+        weekly_data["Better Call Saul"]["score"] += score
+
+    if ("that 90s show" in comment_lower or "the 90s show" in comment_lower) and "That '90s Show".lower() not in comment_lower:
+        weekly_data["That '90s Show"]["mentions"] += 1
+        weekly_data["That '90s Show"]["score"] += score
+
+    if "tlou" in comment_lower and "last of us" not in comment_lower:
+        weekly_data["The Last of Us"]["mentions"] += 1
+        weekly_data["The Last of Us"]["score"] += score
+
     if "andor" in comment_lower and "star wars: andor" not in comment_lower:
         weekly_data["Star Wars: Andor"]["mentions"] += 1
         weekly_data["Star Wars: Andor"]["score"] += score
@@ -182,6 +199,10 @@ for show, details in weekly_data.items():
             weekly_data[show]["total mentions"] = (value2["total mentions"] + weekly_data[show]["mentions"])
             weekly_data[show]["total score"] = (value2["total score"] + weekly_data[show]["score"])
 
+            # change this next time
+            weekly_data[show]["total-regex-mentions"] = weekly_data[show]["regex-mentions"]
+            weekly_data[show]["total-regex-score"] = weekly_data[show]["regex-score"]
+
             if details["mentions"] >= 10:
                 # check last weeks weekly_data and add to consecutive number
                 if value2["consecutive"] >= 1:
@@ -204,6 +225,10 @@ for show, details in weekly_data.items():
         weekly_data[show]["total score"] = weekly_data[show]["score"]
         weekly_data[show]["week added"] = week_number
 
+        # change this next time
+        weekly_data[show]["total-regex-mentions"] = weekly_data[show]["regex-mentions"]
+        weekly_data[show]["total-regex-score"] = weekly_data[show]["regex-score"]
+
         if weekly_data[show]["mentions"] >= 10:
             weekly_data[show]["consecutive"] = 1
             weekly_data[show]["gain"] = weekly_data[show]["mentions"]
@@ -223,7 +248,8 @@ skip_shows = ["Ally", "Really", "Star", "King", "From", "Time", "Arte", "The Fir
               "Another", "Roba", "Back", "Hard", "Haven", "Made", "High", "Look", "Episodes", "Hank", "Times",
               "Land", "Ellen", "Action", "Rise", "Found", "Between", "Mila", "Help", "Sever", "Thanks", "The End",
               "Looking", "Live", "Life", "LIFE", "Origin", "Else", "Girls", "GIRLS", "Absolutely", "Special", "Lace",
-              "Together", "ToGetHer"]
+              "Together", "ToGetHer","Love", "Dark", "VICE", "Itch", "Anno", "Stone", "Honest", "Kings", "The Great Show",
+              "The Game", "Television"]
 this_week = this_week[~this_week.index.isin(skip_shows)]
 this_week = this_week[this_week["mentions"] > 4]
 
