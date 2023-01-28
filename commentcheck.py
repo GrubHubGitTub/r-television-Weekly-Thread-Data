@@ -19,7 +19,7 @@ reddit = praw.Reddit(
     user_agent="television fetch by u/Grubster11",
 )
 
-submission = reddit.submission("10ay0og")
+submission = reddit.submission("10h0jah")
 submission.comments.replace_more(limit=None)
 
 with open(f"{date}-allShows.json", 'r') as json_file:
@@ -77,7 +77,8 @@ for comment in submission.comments.list():
         weekly_data["Better Call Saul"]["mentions"] += 1
         weekly_data["Better Call Saul"]["score"] += score
 
-    if ("that 90s show" in comment_lower or "the 90s show" in comment_lower) and "That '90s Show".lower() not in comment_lower:
+    if ("90s show" in comment_lower or "90's show" in comment_lower) and \
+            "That '90s Show".lower() not in comment_lower:
         weekly_data["That '90s Show"]["mentions"] += 1
         weekly_data["That '90s Show"]["score"] += score
 
@@ -198,10 +199,8 @@ for show, details in weekly_data.items():
             weekly_data[show]["week added"] = value2["week added"]
             weekly_data[show]["total mentions"] = (value2["total mentions"] + weekly_data[show]["mentions"])
             weekly_data[show]["total score"] = (value2["total score"] + weekly_data[show]["score"])
-
-            # change this next time
-            weekly_data[show]["total-regex-mentions"] = weekly_data[show]["regex-mentions"]
-            weekly_data[show]["total-regex-score"] = weekly_data[show]["regex-score"]
+            weekly_data[show]["total-regex-mentions"] = (value2["total-regex-mentions"] + weekly_data[show]["regex-mentions"])
+            weekly_data[show]["total-regex-score"] = (value2["total-regex-score"] + weekly_data[show]["regex-score"])
 
             if details["mentions"] >= 10:
                 # check last weeks weekly_data and add to consecutive number
@@ -224,8 +223,6 @@ for show, details in weekly_data.items():
         weekly_data[show]["total mentions"] = weekly_data[show]["mentions"]
         weekly_data[show]["total score"] = weekly_data[show]["score"]
         weekly_data[show]["week added"] = week_number
-
-        # change this next time
         weekly_data[show]["total-regex-mentions"] = weekly_data[show]["regex-mentions"]
         weekly_data[show]["total-regex-score"] = weekly_data[show]["regex-score"]
 
