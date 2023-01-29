@@ -215,6 +215,7 @@ for show, details in weekly_data.items():
             else:
                 # save last date for next re appearance
                 weekly_data[show]["consecutive"] = 0
+                weekly_data[show]["total top"] = value2["total top"]
                 if value2["consecutive"] >= 1:
                     weekly_data[show]["last date"] = last_week_date
 
