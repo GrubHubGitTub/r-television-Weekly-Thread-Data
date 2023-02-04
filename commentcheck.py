@@ -19,7 +19,7 @@ reddit = praw.Reddit(
     user_agent="television fetch by u/Grubster11",
 )
 
-submission = reddit.submission("10h0jah")
+submission = reddit.submission("10mocs0")
 submission.comments.replace_more(limit=None)
 
 with open(f"{date}-allShows.json", 'r') as json_file:
@@ -69,6 +69,10 @@ for comment in submission.comments.list():
                 details["regex-score"] += score
 
     # manual checks for common ways to say names on reddit
+    if "lockwood" in comment_lower and "Lockwood & Co.".lower() not in comment_lower:
+        weekly_data["Lockwood & Co."]["mentions"] += 1
+        weekly_data["Lockwood & Co."]["score"] += score
+
     if "ginny and georgia" in comment_lower and "Ginny & Georgia".lower() not in comment_lower:
         weekly_data["Ginny & Georgia"]["mentions"] += 1
         weekly_data["Ginny & Georgia"]["score"] += score
