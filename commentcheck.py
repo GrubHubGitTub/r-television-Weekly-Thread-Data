@@ -69,6 +69,10 @@ for comment in submission.comments.list():
                 details["regex-score"] += score
 
     # manual checks for common ways to say names on reddit
+    if "cunk" in comment_lower and "Cunk on Earth".lower() not in comment_lower:
+        weekly_data["Cunk on Earth"]["mentions"] += 1
+        weekly_data["Cunk on Earth"]["score"] += score
+
     if "lockwood" in comment_lower and "Lockwood & Co.".lower() not in comment_lower:
         weekly_data["Lockwood & Co."]["mentions"] += 1
         weekly_data["Lockwood & Co."]["score"] += score
