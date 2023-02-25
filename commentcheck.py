@@ -15,11 +15,11 @@ print(f"it's week {week_number}")
 
 reddit = praw.Reddit(
     client_id="efvqTOiFmiUSsHiNWOquig",
-    client_secret="",
+    client_secret="7ggpUxYtkLkGFWMfLJZguO3SVku2NQ",
     user_agent="television fetch by u/Grubster11",
 )
 
-submission = reddit.submission("10yvkm5")
+submission = reddit.submission("114puoi")
 submission.comments.replace_more(limit=None)
 
 with open(f"{date}-allShows.json", 'r') as json_file:
