@@ -15,7 +15,7 @@ print(f"it's week {week_number}")
 
 reddit = praw.Reddit(
     client_id="efvqTOiFmiUSsHiNWOquig",
-    client_secret="7ggpUxYtkLkGFWMfLJZguO3SVku2NQ",
+    client_secret="",
     user_agent="television fetch by u/Grubster11",
 )
 
