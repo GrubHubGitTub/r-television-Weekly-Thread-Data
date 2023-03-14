@@ -5,7 +5,6 @@ from datetime import datetime, timedelta
 
 d = datetime.today()
 date = d.strftime('%d-%m-%Y')
-last_week_date = (d - timedelta(days=7)).strftime('%d-%m-%Y')
 
 formatted = str(d.date())
 tup = d.fromisoformat(formatted)
@@ -19,7 +18,7 @@ reddit = praw.Reddit(
     user_agent="television fetch by u/Grubster11",
 )
 
-submission = reddit.submission("114puoi")
+submission = reddit.submission("11h48h3")
 submission.comments.replace_more(limit=None)
 
 with open(f"{date}-allShows.json", 'r') as json_file:
@@ -184,19 +183,24 @@ for comment in submission.comments.list():
 #         weekly_data[show]["total top"] = 1
 
 # check and compare with last week:
-try:
-    with open(f"{last_week_date}-allShows.json", 'r') as json_file:
-        last_week = json.load(json_file)
 
-except FileNotFoundError:
+
+for i in range(5,12):
+    last_week_date = (d - timedelta(days=i)).strftime('%d-%m-%Y')
     try:
-        last_week_date = (d - timedelta(days=6)).strftime('%d-%m-%Y')
         with open(f"{last_week_date}-allShows.json", 'r') as json_file:
             last_week = json.load(json_file)
+            break
     except FileNotFoundError:
-        last_week_date = (d - timedelta(days=8)).strftime('%d-%m-%Y')
-        with open(f"{last_week_date}-allShows.json", 'r') as json_file:
-            last_week = json.load(json_file)
+        pass
+    # try:
+    #     last_week_date = (d - timedelta(days=6)).strftime('%d-%m-%Y')
+    #     with open(f"{last_week_date}-allShows.json", 'r') as json_file:
+    #         last_week = json.load(json_file)
+    # except FileNotFoundError:
+    #     last_week_date = (d - timedelta(days=8)).strftime('%d-%m-%Y')
+    #     with open(f"{last_week_date}-allShows.json", 'r') as json_file:
+    #         last_week = json.load(json_file)
 
 for show, details in weekly_data.items():
 

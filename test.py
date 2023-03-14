@@ -1,8 +1,15 @@
-shows = ["The White Lotus", "The Last of Us", "The Good", "Bad"]
+from datetime import datetime, timedelta
+import json
+d = datetime.today()
+date = d.strftime('%d-%m-%Y')
 
-for show in shows:
-    if show[0:4] == "The ":
-        print(show)
-        show = show[4:]
-        print(show)
-    print(show.lower())
+for i in range(5,12):
+    last_week_date = (d - timedelta(days=i)).strftime('%d-%m-%Y')
+    try:
+        with open(f"{last_week_date}-allShows.json", 'r') as json_file:
+            last_week = json.load(json_file)
+            print("ya", {last_week_date})
+            break
+    except FileNotFoundError:
+        pass
+print(last_week)
