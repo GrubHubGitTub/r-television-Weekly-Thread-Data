@@ -18,7 +18,7 @@ reddit = praw.Reddit(
     user_agent="television fetch by u/Grubster11",
 )
 
-submission = reddit.submission("11h48h3")
+submission = reddit.submission("120mx4o")
 submission.comments.replace_more(limit=None)
 
 with open(f"{date}-allShows.json", 'r') as json_file:
@@ -68,6 +68,10 @@ for comment in submission.comments.list():
                 details["regex-score"] += score
 
     # manual checks for common ways to say names on reddit
+    if "class of 07" in comment_lower and "Class of '07".lower() not in comment_lower:
+        weekly_data["Class of '07"]["mentions"] += 1
+        weekly_data["Class of '07"]["score"] += score
+
     if "cunk" in comment_lower and "Cunk on Earth".lower() not in comment_lower:
         weekly_data["Cunk on Earth"]["mentions"] += 1
         weekly_data["Cunk on Earth"]["score"] += score
@@ -98,8 +102,8 @@ for comment in submission.comments.list():
         weekly_data["Star Wars: Andor"]["score"] += score
 
     if "dahmer" in comment_lower and "Monster: The Jeffrey Dahmer Story".lower() not in comment_lower:
-        weekly_data["Monster: The Jeffrey Dahmer Story"]["mentions"] += 1
-        weekly_data["Monster: The Jeffrey Dahmer Story"]["score"] += score
+        weekly_data["DAHMER - Monster: The Jeffrey Dahmer Story"]["mentions"] += 1
+        weekly_data["DAHMER - Monster: The Jeffrey Dahmer Story"]["score"] += score
 
     if ("she hulk" in comment_lower or "she-hulk" in comment_lower) and "She-Hulk: Attorney at Law".lower() not in comment_lower:
         weekly_data["She-Hulk: Attorney at Law"]["mentions"] += 1
@@ -185,7 +189,7 @@ for comment in submission.comments.list():
 # check and compare with last week:
 
 
-for i in range(5,12):
+for i in range(1,12):
     last_week_date = (d - timedelta(days=i)).strftime('%d-%m-%Y')
     try:
         with open(f"{last_week_date}-allShows.json", 'r') as json_file:
