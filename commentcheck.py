@@ -18,7 +18,7 @@ reddit = praw.Reddit(
     user_agent="television fetch by u/Grubster11",
 )
 
-submission = reddit.submission("14az3by")
+submission = reddit.submission("155qg3d")
 submission.comments.replace_more(limit=None)
 
 with open(f"{date}-allShows.json", 'r') as json_file:
