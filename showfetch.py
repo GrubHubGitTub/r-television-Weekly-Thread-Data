@@ -5,6 +5,7 @@ import json
 
 def fetch_shows(page):
     response = requests.get("https://api.tvmaze.com/shows?page=" + str(page))
+    # print(response)
     if response.status_code == 404:
         return "Done"
     response = response.json()
@@ -24,10 +25,13 @@ while fetch:
     if shows == "Done":
         break
     for show in shows:
+        if show["name"] == "Shōgun":
+            print(show["name"])
+            show["name"] = "Shogun"
         if is_english(show["name"]):
             imdb = show["externals"]["imdb"]
             if imdb is None:
-                print(show)
+                # print(show)
                 continue
             if len(show["name"]) == 1:
                 continue
