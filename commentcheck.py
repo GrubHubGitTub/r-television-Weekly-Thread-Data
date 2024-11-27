@@ -180,6 +180,10 @@ for comment in submission.comments.list():
         weekly_data["Winning Time: The Rise of the Lakers Dynasty"]["mentions"] += 1
         weekly_data["Winning Time: The Rise of the Lakers Dynasty"]["score"] += score
 
+    if "arcane" in comment_lower and "Arcane: League of Legends".lower() not in comment_lower:
+        weekly_data["Arcane: League of Legends"]["mentions"] += 1
+        weekly_data["Arcane: League of Legends"]["score"] += score
+
 # below is only used for the first week to add default values for comparison on next file
 # for show, details in weekly_data.items():
 #     weekly_data[show]["total mentions"] = weekly_data[show]["mentions"]
