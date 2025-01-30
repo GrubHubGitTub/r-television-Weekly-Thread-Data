@@ -30,7 +30,7 @@ for thread in threads[week-1:]:
         print(comment_number)
 
         # skip my own comments
-        if comment.author == "Grubster11":
+        if comment.author in ("Grubster11", "zrhodes3"):
             print("SKIP COMMENT")
             continue
 

@@ -3,6 +3,47 @@ import json
 import praw
 from datetime import datetime, timedelta
 
+# manual checks for common ways to say names on reddit
+manual_checks = {
+    "Love & Death": ['love and death'],
+    "Class of '07": ["class of 07"],
+    "Cunk on Earth": ["cunk"],
+    "Lockwood & Co.": ["lockwood"],
+    "Ginny & Georgia": ["ginny and georgia"],
+    "Better Call Saul": ["bcs"],
+    "That '90s Show": ["90s show", "90's show"],
+    "The Last of Us": ["tlou"],
+    "Star Wars: Andor": ["andor"],
+    "DAHMER - Monster: The Jeffrey Dahmer Story": ["dahmer"],
+    "She-Hulk: Attorney at Law": ["she-hulk", "she hulk"],
+    "The Lord of the Rings: The Rings of Power": ["lord of the rings", "rings of power", "lotr"],
+    "Cyberpunk: Edgerunners": ["cyberpunk"],
+    "House of the Dragon": ["house of dragon", "hotd", "house of dragons"],
+    "Mr. Robot": ["mr robot"],
+    "Mr Inbetween": ["mr. inbetween"],
+    "Guillermo del Toro's Cabinet of Curiosities": ["cabinet of curiosities"],
+    "The Devil's Hour": ["the devils hour"],
+    "Slow Horses": ["slow horse"],
+    "SAS: Rogue Heroes": ["rogue heroes"],
+    "Harry & Meghan": ["harry and meghan"],
+    "The Witcher: Blood Origin": ["blood origin"],
+    "Fleishman is in Trouble": ["fleishman"],
+    "Love, Death & Robots": ["love death and robots", "love, death and robots", "love, death, and robots"],
+    "Star Trek: Picard": ["picard"],
+    "Pam & Tommy": ["pam and tommy"],
+    "Winning Time: The Rise of the Lakers Dynasty": ["winning time"],
+    "Arcane: League of Legends": ["arcane"],
+    "Dune: Prophecy": ["dune", "dune prophecy", "dune : prophecy", "dune : prophesy", "dune prophesy"],
+    "Monarch: Legacy of Monsters": ["monarch"],
+    "The Lazarus Project": ["lazarus"],
+    "The Traitors": ["traitors"],
+    "Mr. & Mrs. Smith": ["mr and Mrs Smith", "mr & mrs Smith", "mr. and mrs. smith"],
+    "Shogun": ["Shōgun"],
+    "X-Men '97": ["x-men"],
+    "A Man on the Inside": ["man on the inside", "the man on the inside"],
+    "Star Wars: Skeleton Crew": ["skeleton crew"]
+}
+
 d = datetime.today()
 date = d.strftime('%d-%m-%Y')
 
@@ -33,7 +74,7 @@ for comment in submission.comments.list():
     print(comment_number)
 
     # skip my own comments
-    if comment.author == "Grubster11":
+    if comment.author in ("Grubster11", "zrhodes3"):
         print("SKIP COMMENT")
         continue
 
@@ -67,127 +108,15 @@ for comment in submission.comments.list():
                 details["regex-mentions"] += 1
                 details["regex-score"] += score
 
-    # manual checks for common ways to say names on reddit
-    if "love and death" in comment_lower and "Love & Death".lower() not in comment_lower:
-        weekly_data["Love & Death"]["mentions"] += 1
-        weekly_data["Love & Death"]["score"] += score
-
-    if "class of 07" in comment_lower and "Class of '07".lower() not in comment_lower:
-        weekly_data["Class of '07"]["mentions"] += 1
-        weekly_data["Class of '07"]["score"] += score
-
-    if "cunk" in comment_lower and "Cunk on Earth".lower() not in comment_lower:
-        weekly_data["Cunk on Earth"]["mentions"] += 1
-        weekly_data["Cunk on Earth"]["score"] += score
-
-    if "lockwood" in comment_lower and "Lockwood & Co.".lower() not in comment_lower:
-        weekly_data["Lockwood & Co."]["mentions"] += 1
-        weekly_data["Lockwood & Co."]["score"] += score
-
-    if "ginny and georgia" in comment_lower and "Ginny & Georgia".lower() not in comment_lower:
-        weekly_data["Ginny & Georgia"]["mentions"] += 1
-        weekly_data["Ginny & Georgia"]["score"] += score
-
-    if "bcs" in comment_lower and "Better Call Saul".lower() not in comment_lower:
-        weekly_data["Better Call Saul"]["mentions"] += 1
-        weekly_data["Better Call Saul"]["score"] += score
-
-    if ("90s show" in comment_lower or "90's show" in comment_lower) and \
-            "That '90s Show".lower() not in comment_lower:
-        weekly_data["That '90s Show"]["mentions"] += 1
-        weekly_data["That '90s Show"]["score"] += score
-
-    if "tlou" in comment_lower and "last of us" not in comment_lower:
-        weekly_data["The Last of Us"]["mentions"] += 1
-        weekly_data["The Last of Us"]["score"] += score
-
-    if "andor" in comment_lower and "star wars: andor" not in comment_lower:
-        weekly_data["Star Wars: Andor"]["mentions"] += 1
-        weekly_data["Star Wars: Andor"]["score"] += score
-
-    if "dahmer" in comment_lower and "Monster: The Jeffrey Dahmer Story".lower() not in comment_lower:
-        weekly_data["DAHMER - Monster: The Jeffrey Dahmer Story"]["mentions"] += 1
-        weekly_data["DAHMER - Monster: The Jeffrey Dahmer Story"]["score"] += score
-
-    if ("she hulk" in comment_lower or "she-hulk" in comment_lower) and "She-Hulk: Attorney at Law".lower() not in comment_lower:
-        weekly_data["She-Hulk: Attorney at Law"]["mentions"] += 1
-        weekly_data["She-Hulk: Attorney at Law"]["score"] += score
-
-    if ("lord of the rings" in comment_lower or "rings of power" in comment_lower or "lotr" in comment_lower) \
-            and "The Lord of the Rings: The Rings of Power".lower() not in comment_lower:
-        weekly_data["The Lord of the Rings: The Rings of Power"]["mentions"] += 1
-        weekly_data["The Lord of the Rings: The Rings of Power"]["score"] += score
-
-    if "cyberpunk" in comment_lower and "Cyberpunk: Edgerunners".lower() not in comment_lower:
-        weekly_data["Cyberpunk: Edgerunners"]["mentions"] += 1
-        weekly_data["Cyberpunk: Edgerunners"]["score"] += score
-
-    if ("house of dragon" in comment_lower or "hotd" in comment_lower or "house of dragons" in comment_lower) \
-            and "House of the Dragon".lower() not in comment_lower:
-        weekly_data["House of the Dragon"]["mentions"] += 1
-        weekly_data["House of the Dragon"]["score"] += score
-
-    if "mr robot" in comment_lower and "Mr. Robot".lower() not in comment_lower:
-        weekly_data["Mr. Robot"]["mentions"] += 1
-        weekly_data["Mr. Robot"]["score"] += score
-
-    if "mr. inbetween" in comment_lower and "Mr Inbetween".lower() not in comment_lower:
-        weekly_data["Mr Inbetween"]["mentions"] += 1
-        weekly_data["Mr Inbetween"]["score"] += score
-
-    if "cabinet of curiosities" in comment_lower and "Guillermo del Toro's Cabinet of Curiosities".lower() not in comment_lower:
-        weekly_data["Guillermo del Toro's Cabinet of Curiosities"]["mentions"] += 1
-        weekly_data["Guillermo del Toro's Cabinet of Curiosities"]["score"] += score
-
-    if "the devils hour" in comment_lower and "The Devil's Hour".lower() not in comment_lower:
-        weekly_data["The Devil's Hour"]["mentions"] += 1
-        weekly_data["The Devil's Hour"]["score"] += score
-
-    if "slow horse" in comment_lower and "Slow Horses".lower() not in comment_lower:
-        weekly_data["Slow Horses"]["mentions"] += 1
-        weekly_data["Slow Horses"]["score"] += score
-
-    if "rogue heroes" in comment_lower and "SAS: Rogue Heroes".lower() not in comment_lower:
-        weekly_data["SAS: Rogue Heroes"]["mentions"] += 1
-        weekly_data["SAS: Rogue Heroes"]["score"] += score
-
-    if "harry and meghan" in comment_lower and "Harry & Meghan".lower() not in comment_lower:
-        weekly_data["Harry & Meghan"]["mentions"] += 1
-        weekly_data["Harry & Meghan"]["score"] += score
-
-    if "blood origin" in comment_lower and "The Witcher: Blood Origin".lower() not in comment_lower:
-        weekly_data["The Witcher: Blood Origin"]["mentions"] += 1
-        weekly_data["The Witcher: Blood Origin"]["score"] += score
-
-    if "fleishman" in comment_lower and "Fleishman is in Trouble".lower() not in comment_lower:
-        weekly_data["Fleishman is in Trouble"]["mentions"] += 1
-        weekly_data["Fleishman is in Trouble"]["score"] += score
-
-    if ("love death and robots" in comment_lower or "love, death and robots" in comment_lower or "love, death, and robots" in comment_lower) and \
-            "Love, Death & Robots".lower() not in comment_lower:
-        weekly_data["Love, Death & Robots"]["mentions"] += 1
-        weekly_data["Love, Death & Robots"]["score"] += score
-
-    if "picard" in comment_lower and "Star Trek: Picard".lower() not in comment_lower:
-        weekly_data["Star Trek: Picard"]["mentions"] += 1
-        weekly_data["Star Trek: Picard"]["score"] += score
-
-    if "pam and tommy" in comment_lower and "Pam & Tommy".lower() not in comment_lower:
-        weekly_data["Pam & Tommy"]["mentions"] += 1
-        weekly_data["Pam & Tommy"]["score"] += score
-
-    if "winning time" in comment_lower and "Winning Time: The Rise of the Lakers Dynasty".lower() not in comment_lower:
-        weekly_data["Winning Time: The Rise of the Lakers Dynasty"]["mentions"] += 1
-        weekly_data["Winning Time: The Rise of the Lakers Dynasty"]["score"] += score
-
-    if "arcane" in comment_lower and "Arcane: League of Legends".lower() not in comment_lower:
-        weekly_data["Arcane: League of Legends"]["mentions"] += 1
-        weekly_data["Arcane: League of Legends"]["score"] += score
-
-    if ("dune" in comment_lower or "dune prophecy" in comment_lower or "dune : prophecy" in comment_lower  or "dune : prophesy" in comment_lower or "dune prophesy" in comment_lower) \
-            and "Dune: Prophecy".lower() not in comment_lower:
-        weekly_data["Dune: Prophecy"]["mentions"] += 1
-        weekly_data["Dune: Prophecy"]["score"] += score
+    for show, check_list in manual_checks.items():
+        check_show = show
+        if len(check_show) > 10 and check_show[0:4] == "The ":
+            check_show = show[4:]
+        for check in check_list:
+            if check in comment_lower and show.lower() not in comment_lower:
+                weekly_data[show]["mentions"] += 1
+                weekly_data[show]["score"] += score
+                break
 
 # below is only used for the first week to add default values for comparison on next file
 # for show, details in weekly_data.items():
